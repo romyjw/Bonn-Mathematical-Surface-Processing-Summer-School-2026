@@ -109,11 +109,17 @@ You may like to use these surfaces for evaluation in your own projects, or use t
 ## Citation
 
 ```bibtex
-@article{williamson2025spherical,
-  title   = {Neural Geometry Processing via Spherical Neural Surfaces},
-  author  = {Williamson, Romy and Mitra, Niloy J.},
-  year    = {2025},
-  journal = {Eurographics}
+@article{sns:williamson:25,
+author = {Williamson, Romy and Mitra, Niloy J.},
+title = {Neural Geometry Processing via Spherical Neural Surfaces},
+journal = {Computer Graphics Forum},
+volume = {44},
+number = {2},
+pages = {e70021},
+doi = {https://doi.org/10.1111/cgf.70021},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.70021},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.70021},
+year = {2025}
 }
 ```
 ## Authors
