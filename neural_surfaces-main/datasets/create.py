@@ -7,7 +7,7 @@ from .model import ModelDataset, ModelDatasetNoFaces
 
 from .surface_map import SurfaceMapDataset, SurfaceMapSingularDataset
 from .eigenfunc import EigenfuncDataset, EigenfuncOverfitDataset
-from .geodesic import GeodesicDataset
+#from .geodesic import GeodesicDataset
 
 def create(config, experiment):
     ### Create a dataset and dataloader for each element in the configuration

@@ -24,7 +24,7 @@ sample['ortho_functions'] = []
 
 spherepoints = sample['param']
 modules_creator = ExperimentConfigurator()
-runner = MainRunner('experiments/eigenfunc/test.json', modules_creator)## easier than sys.argv[1]
+runner = MainRunner('experiment_configs/eigenfunc/test.json', modules_creator)## easier than sys.argv[1]
 model = runner.get_model()
 
 if not os.path.exists('../data/eigenfunc/'+name+'/'):  # Check if the folder exists

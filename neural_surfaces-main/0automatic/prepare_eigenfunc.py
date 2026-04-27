@@ -1,8 +1,14 @@
 import os
 import sys
 import shutil
-from utils.normalise_mesh import normalise_mesh
 import re
+
+
+# Add the project root (one level up) to the path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Now the imports will work
+from normalise_mesh import normalise_mesh
+
 
 
 if len(sys.argv)>1:
@@ -42,7 +48,7 @@ def step2():
 	print('\nWriting a new experiment json file.')
 	with open('experiment_configs/eigenfunc/GENERIC.json') as generic_file:
 		generic_json_string = generic_file.read()
-	print(generic_json_string)
+	
 
 	
 	specific_json_string = re.sub('XXX-NAME-XXX', name, generic_json_string, count=0, flags=0)
@@ -51,6 +57,7 @@ def step2():
 	with open('experiment_configs/eigenfunc/'+name+'.json', "w") as text_file:
 	    text_file.write(specific_json_string)
 	print('\nFinished writing a new experiment json file.')
+	print(specific_json_string)
 
 def step3():
 	input('Please take this opportunity to check that the experiment json file is as you wish and make any edits if required.')
@@ -58,7 +65,7 @@ def step3():
 	
 
 def step4():
-	print ('\nNow, to run the experiment you must simply use this command, here on Balin:')
+	print ('\nNow, to run the experiment you must simply use this command:')
 	print('python -m mains.training experiment_configs/eigenfunc/'+name+'.json')
 	
 step0()
