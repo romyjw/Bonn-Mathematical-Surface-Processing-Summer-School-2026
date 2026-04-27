@@ -10,13 +10,13 @@ from runners import MainRunner
 from mains.experiment_configurator import ExperimentConfigurator
 import torch
 
-from sample_preparation.eigenfunc import sample_prep_functions #might be wrong path
+from sample_preparation.eigenfunc import sample_prep_functions 
 
 name = sys.argv[1]
 
 #############
 
-sample = sample_prep_functions.prepare_sample(name) #where the action happens!!! Generating samples.
+sample = sample_prep_functions.prepare_sample(name) #Where the action happens!!! We generate samples on the SNS. Importantly, this includes the 'transpose inverse jacobians' which are required in the eigenfunction computation (and those are specific to a particular surface!)
 
 ################## add in ortho function samples, if any ######################
 sample['ortho_functions'] = []
@@ -24,7 +24,11 @@ sample['ortho_functions'] = []
 
 spherepoints = sample['param']
 modules_creator = ExperimentConfigurator()
-runner = MainRunner('experiment_configs/eigenfunc/test.json', modules_creator)## easier than sys.argv[1]
+
+############## We use the test.json file just to get the model type (number of layers, etc.). Does not matter that it could be for a different shape.
+runner = MainRunner('experiment_configs/eigenfunc/test.json', modules_creator)
+
+
 model = runner.get_model()
 
 if not os.path.exists('../data/eigenfunc/'+name+'/'):  # Check if the folder exists

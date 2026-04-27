@@ -35,8 +35,10 @@ def prepare_sample(SNS_name, target_number_samples=10000, initial_number_samples
    
     ######### set up model and runner etc. for the spherical neural surface ##########
     modules_creator = ExperimentConfigurator()
-    runner = MainRunner('experiment_configs/overfit/ARMADILLO21622.json', modules_creator)
+    runner = MainRunner('experiment_configs/overfit/ARMADILLO21622.json', modules_creator) #just to get the model type (number of layers etc. ) Do *not* need to change even if you aren't using Armadillo.
+    
     model = runner.get_model()
+    
     
 
 
