@@ -43,7 +43,7 @@ To visualise an SNS, you will need:
 - a sphere mesh at the resolution that you want to display, e.g. ```data/analytic/sphere/sphere6.obj ```
 We provide the model weights for three Spherical Neural Surfaces: the Armadillo, Max Planck and our analytic Flower shape. The weights stored in the folder ```data/SNS/```.
 
-Check that you have these, check that the filepaths are correct in ```visuals/visOverfit.py ```, then run e.g. ```sh python -m visuals.visOverfit  MAX10606 6 ```. The number refers to which sphere mesh to use; ```sphere6.obj``` is the level 6 icosphere.
+Check that you have these, check that the filepaths are correct in ```visuals/visOverfit.py ```, then run e.g. ```python -m visuals.visOverfit  MAX10606 6 ``` (in terminal). The number refers to which sphere mesh to use; ```sphere6.obj``` is the level 6 icosphere.
 
 #### 3. Crossfields
 By changing settings within ```neural_surfaces-main/visuals/visOverfit.py ``` you can generate obj files for maximum and minimum curvature directions. These will be stored in, e.g. ```data/visualisation/MAX10606 ```
@@ -109,11 +109,17 @@ You may like to use these surfaces for evaluation in your own projects, or use t
 ## Citation
 
 ```bibtex
-@inproceedings{williamson2025spherical,
-  title   = {Neural Geometry Processing via Spherical Neural Surfaces},
-  author  = {Williamson, Romy and Mitra, Niloy J.},
-  year    = {2025},
-  journal = {Eurographics}
+@article{sns:williamson:25,
+author = {Williamson, Romy and Mitra, Niloy J.},
+title = {Neural Geometry Processing via Spherical Neural Surfaces},
+journal = {Computer Graphics Forum},
+volume = {44},
+number = {2},
+pages = {e70021},
+doi = {https://doi.org/10.1111/cgf.70021},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.70021},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.70021},
+year = {2025}
 }
 ```
 ## Authors
