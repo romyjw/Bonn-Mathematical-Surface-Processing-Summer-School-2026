@@ -162,37 +162,36 @@ faces = tm_sphere.faces
 for i in range(subdiv_steps):
 	vertices, faces = refine(vertices, faces, spherical=True) #one subdivision step
 
-from differential import batches_diff_quant
-batches_diff_quant = batches_diff_quant.batches_diff_quant(vertices, model, diffmod, batch_size)
+from differential import BatchDiffQuant
+bdq = BatchDiffQuant(vertices, model, diffmod, batch_size)
 
-batches_diff_quant.compute_SNS()
+bdq.compute_SNS()
 if 'meancurv' in vis_settings or 'gausscurv' in vis_settings:
-	batches_diff_quant.compute_curvature()
-	#pass
+	bdq.compute_curvature()
 if 'normals' in vis_settings:
-	batches_diff_quant.compute_normals()
+	bdq.compute_normals()
 if 'beltrami_H' in vis_settings:
-	batches_diff_quant.compute_beltrami_H()
+	bdq.compute_beltrami_H()
 if 'area_distortion' in vis_settings:
-	batches_diff_quant.compute_area_distortions()
+	bdq.compute_area_distortions()
 if 'beltrami_on_X' in vis_settings:
-	batches_diff_quant.compute_beltrami_on_X()
+	bdq.compute_beltrami_on_X()
 if 'directions' in vis_settings:
 	if reject_points_for_PCD:
-		batches_diff_quant.compute_area_distortions()
-	batches_diff_quant.compute_directions()
+		bdq.compute_area_distortions()
+	bdq.compute_directions()
 if vis_settings==[]:
-	batches_diff_quant.compute_SNS()
-	
+	bdq.compute_SNS()
+
 ############# get the info from the batches computation #######
-all_H = batches_diff_quant.all_H
-all_K = batches_diff_quant.all_K
-all_normals = batches_diff_quant.all_normals
-all_directions = batches_diff_quant.all_directions
-all_output_vertices = batches_diff_quant.all_output_vertices
-all_beltrami_H = batches_diff_quant.all_beltrami_H
-all_area_distortions = batches_diff_quant.all_area_distortions
-all_beltrami_on_X = batches_diff_quant.all_beltrami_on_X
+all_H = bdq.all_H
+all_K = bdq.all_K
+all_normals = bdq.all_normals
+all_directions = bdq.all_directions
+all_output_vertices = bdq.all_output_vertices
+all_beltrami_H = bdq.all_beltrami_H
+all_area_distortions = bdq.all_area_distortions
+all_beltrami_on_X = bdq.all_beltrami_on_X
 ###############################################################
 
 ##### save ####

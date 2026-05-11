@@ -25,7 +25,6 @@ import re
 from utils.formula_converter import *
 from utils.custom_ply_writing import *
 
-from differential import batches_diff_quant
 from visuals.helpers.colourmappings import *
 
 

@@ -25,7 +25,7 @@ import re
 from utils.formula_converter import *
 from utils.custom_ply_writing import *
 
-from differential import batches_diff_quant
+from differential import BatchDiffQuant
 from visuals.helpers.colourmappings import *
 
 
@@ -178,10 +178,10 @@ tensorvertices = torch.Tensor(vertices)
 #def get_function_derivatives(vertices, model, diffmod, batch_size, func_type='fancy_sine'):
 	
 
-batches_diff_quant = batches_diff_quant.batches_diff_quant(vertices, model, diffmod, batch_size)
-batches_diff_quant.compute_SNS()
+bdq = BatchDiffQuant(vertices, model, diffmod, batch_size)
+bdq.compute_SNS()
 ############# get the info from the batches computation #######
-all_output_vertices = batches_diff_quant.all_output_vertices
+all_output_vertices = bdq.all_output_vertices
 
 translation = np.array([0.0,0.0,0.0]) #np.array([-0.17485121, -0.00969014, -0.02003876]) #np.array([0.0,0.0,0.0])#np.array([-4.79817577e-01 , 3.19565303e-17  ,1.11654641e-17])
 all_output_vertices = all_output_vertices - translation
@@ -198,10 +198,10 @@ tm_surf.vertices = all_output_vertices
 
 ########### compute normals, meancurv ##########
 
-batches_diff_quant.compute_curvature()
-batches_diff_quant.compute_normals()
-normals = batches_diff_quant.all_normals
-meancurv = batches_diff_quant.all_H
+bdq.compute_curvature()
+bdq.compute_normals()
+normals = bdq.all_normals
+meancurv = bdq.all_H
 
 ######### get some functions ##########
 

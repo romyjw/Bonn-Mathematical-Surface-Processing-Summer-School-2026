@@ -110,20 +110,20 @@ class ResidualMLP(Module):
 
         ## assemble into a single sequential
         self.mlp = Sequential(*modules)
-        print(self.mlp)
+        #print(self.mlp)
         ## initialize weights
         
         #init_fun = get_init_fun(config['init'])
         #self.mlp.apply(init_fun)
         
         self.init_map_weights()    #####delete above two lines and replace with this line if you want to init with identity.
-        print('init_path is',init_path)        
+        #print('init_path is',init_path)        
         ## set an init_path in the json if you would like to use an initial set of weights (e.g. for finetuning)    
         if not (init_path=='None'):          
             init_weights = torch.load(init_path, map_location=torch.device('cpu'))
-            print('init weights keys',init_weights.keys())
+            #print('init weights keys',init_weights.keys())
             self.load_state_dict(init_weights)
-            print('loaded init weights from file')
+            #print('loaded init weights from file')
     def init_map_weights(self):
         ######## use this in combination with alteration to forward(self,x) to initialise with identity.
 

@@ -1,7 +1,7 @@
 
 import torch
 from differential import *
-from differential import batches_diff_quant
+from differential import BatchDiffQuant
 from runners import MainRunner
 from mains.experiment_configurator import ExperimentConfigurator
 from utils.rejection_sampling import rejection_sampling
@@ -48,7 +48,7 @@ def prepare_sample(SNS_name, target_number_samples=10000, initial_number_samples
     model.load_state_dict(weights)
     model.eval()
 
-    my_batches_diff_quant = batches_diff_quant.batches_diff_quant(gaussian_samples, model, diffmod, 10000) 
+    my_batches_diff_quant = BatchDiffQuant(gaussian_samples, model, diffmod, 10000)
 
 
 	
