@@ -100,6 +100,53 @@ def o3d_mesh(V, F, colours):
     return m
 
 
+def launch_colorbar(entries, cmap, title=''):
+    """Render a colorbar to a temp PNG and open it in the system image viewer.
+
+    entries: list of (label, scaling_key) pairs, e.g. [('mean curvature', 'linear9')]
+    cmap:    colormap name string
+    title:   figure suptitle
+    """
+    import json as _json
+
+    _this_dir = os.path.dirname(os.path.abspath(__file__))
+    _ns_root  = os.path.join(_this_dir, 'neural_surfaces-main')
+
+    script = f"""
+import sys
+sys.path.insert(0, {repr(_ns_root)})
+sys.path.insert(0, {repr(_this_dir)})
+import json, os, subprocess, tempfile
+import matplotlib
+matplotlib.use('Agg')          # non-interactive renderer; fine since we save to file
+from demo_utils import SCALINGS, make_colorbar
+import matplotlib.pyplot as plt
+
+entries = json.loads({repr(_json.dumps(entries))})
+n = len(entries)
+fig, axes = plt.subplots(1, n, figsize=(max(1.5 * n, 2), 4))
+if n == 1:
+    axes = [axes]
+for (label, scaling_key), ax in zip(entries, axes):
+    make_colorbar(fig, ax, SCALINGS[scaling_key], {repr(cmap)}, label)
+fig.suptitle({repr(title)}, fontsize=10, y=1.02)
+plt.tight_layout()
+
+tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
+tmp.close()
+fig.savefig(tmp.name, bbox_inches='tight', dpi=150)
+import platform
+_sys = platform.system()
+if _sys == 'Darwin':
+    subprocess.Popen(['open', tmp.name])
+elif _sys == 'Windows':
+    os.startfile(tmp.name)
+else:
+    subprocess.Popen(['xdg-open', tmp.name])
+"""
+    subprocess.Popen([sys.executable, '-c', script])
+
+
 def launch_viewer(*meshes, window_name='SNS viewer', bg_color=(0.85, 0.85, 0.85)):
     """Open an interactive Open3D window in a subprocess (non-blocking)."""
     import open3d as o3d
