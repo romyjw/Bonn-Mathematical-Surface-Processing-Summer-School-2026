@@ -1,0 +1,1 @@
+{"bbox_min": [-0.8579, -0.8979, -0.9229], "bbox_max": [0.8711, 0.8164, 0.8906], "center": [0.0066, -0.0408, -0.0161], "radius": 1.5186, "delta_x": 0.05, "omega": 10.0, "n_steps": 100, "captions": {"intro": "Below: neural-CPM applied to the Apple. Step through the Poisson pipeline or play the Heat animation."}}

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Neural Closest-Point Method · Bonn Summer School 2026</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Neural Closest-Point Method</h1>
+<p class="lede">
+A two-part tour for the Bonn Mathematical Surface Processing Summer School 2026.
+First, an interactive 2-D Closest-Point Method demo so you can <em>see</em> the
+algorithm; then a 3-D viewer of the same algorithm running on the Apple surface,
+with the neural <code>rot_update</code> taking over from the classical band
+extension.
+</p>
+
+<!-- ──────────────────────────────────────────────────────────────────── -->
+<!--  PART 1 — Classical 2-D CPM                                          -->
+<!-- ──────────────────────────────────────────────────────────────────── -->
+<h2>Part 1 &mdash; classical CPM on a 2-D closed curve</h2>
+
+<div class="section two-col">
+  <div>
+    <div class="controls">
+      <button id="btnNew">New curve</button>
+      <button id="btnReset">Fresh u</button>
+      <button id="btnIter">Iterate</button>
+      <button id="btnAuto">Auto ▶</button>
+
+      <div class="cg"><label>band s</label>
+        <input type="range" id="slBand" min="1" max="6" step="0.5" value="2">
+        <span class="val" id="vBand">2.0</span>
+      </div>
+      <div class="cg"><label>h</label>
+        <input type="range" id="slH" min="5" max="28" step="1" value="12">
+        <span class="val" id="vH">12</span>
+      </div>
+      <div class="cg"><label>sub-steps</label>
+        <input type="range" id="slSub" min="1" max="40" step="1" value="8">
+        <span class="val" id="vSub">8</span>
+      </div>
+      <div class="cg">
+        <label><input type="checkbox" id="cbNormals"> show normals</label>
+      </div>
+      <span id="status">step 0</span>
+    </div>
+
+    <div class="controls modegroup">
+      <label><input type="radio" name="vismode" value="curve">    curve only</label>
+      <label><input type="radio" name="vismode" value="cp">       closest-point map</label>
+      <label><input type="radio" name="vismode" value="band">     band cells</label>
+      <label><input type="radio" name="vismode" value="extended"> after extend</label>
+      <label><input type="radio" name="vismode" value="heat">     heat-step Δ</label>
+      <label><input type="radio" name="vismode" value="pulled" checked> after pull-back</label>
+    </div>
+
+    <canvas id="cv" width="720" height="610"></canvas>
+
+    <div class="legend">
+      u: <span class="lbar"></span> &minus;1 &nbsp; (magma) &nbsp; +1
+    </div>
+
+    <div class="algo">
+      Each <em>Iterate</em> performs:
+      <span id="step-1">① extend u from curve → band along closest-point map</span> &nbsp;→&nbsp;
+      <span id="step-2">② grid-Laplacian heat sub-steps</span> &nbsp;→&nbsp;
+      <span id="step-3">③ bilinear pull-back onto curve</span>.
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <h3>What am I looking at?</h3>
+    <p>
+      The closed curve is the &ldquo;surface&rdquo;.
+      Around it we lay a narrow <em>band</em> of grid cells.
+      Each band cell remembers which curve point is closest to it
+      &mdash; that is the <em>closest-point map</em>.
+    </p>
+    <p>
+      Diffusion <em>on the curve</em> is faked by alternating two cheap
+      moves on the grid: copy values along the closest-point map
+      (<em>extend</em>), then take a standard 2-D heat step
+      (<em>heatStep</em>). Bilinear interpolation
+      (<em>pullToCurve</em>) brings the new values home.
+    </p>
+    <p>
+      Use the radio buttons above to isolate each stage visually.
+      The same three stages reappear in 3-D below, where the neural
+      operator replaces the grid extension.
+    </p>
+  </aside>
+</div>
+
+<hr>
+
+<!-- ──────────────────────────────────────────────────────────────────── -->
+<!--  PART 2 — Neural CPM on the Apple                                    -->
+<!-- ──────────────────────────────────────────────────────────────────── -->
+<h2>Part 2 &mdash; neural CPM on a 3-D surface (the Apple)</h2>
+<p class="lede">
+  In 3-D, building a regular grid + closest-point map for an arbitrary mesh
+  is fiddly and dense. The neural variant replaces step ① with a learned
+  <code>rot_update</code> that smooths a function defined near the surface
+  in a way that respects the surface geometry. Steps ② &amp; ③ then become a
+  sparse linear solve (Poisson) or a sequence of explicit Euler steps (Heat).
+</p>
+<p class="lede">
+  The viewers below show <strong>precomputed</strong> outputs from the
+  notebook <code>ncpm_poisson_and_heat.ipynb</code>. You can rotate, zoom,
+  and pan with the mouse; step through the Poisson pipeline; and play the
+  Heat animation. <span id="nstatus"></span>
+</p>
+
+<!-- Poisson stage-stepper -->
+<div class="section">
+  <h3>Poisson: &nbsp;<code>Δ<sub>S</sub> u(x,y,z) = f(x,y,z)</code> on the Apple</h3>
+  <p style="color:#889; font-size:12px; margin: 0 0 8px;">
+    With
+    <code>f(x,y,z) = sin(ωx)·sin(ωy)·sin(ωz)</code>,
+    <code>ω = 10</code>,
+    and zero-mean gauge
+    <code>∫<sub>S</sub> u = 0</code>.
+    (The linear system actually solved on the band is
+    <code>L · u<sub>band</sub> = δx² · f<sub>smoothed</sub></code>,
+    where <code>L</code> is the 7-point stencil without the
+    <code>1/δx²</code> factor.)
+  </p>
+  <div class="controls">
+    <button id="pPrev">◀ Prev stage</button>
+    <button id="pNext">Next stage ▶</button>
+    <span id="pStageIndicator">1/4</span>
+  </div>
+  <div id="three-poisson"></div>
+  <div class="caption" id="pCaption">loading…</div>
+</div>
+
+<!-- Heat animation -->
+<div class="section">
+  <h3>Heat: &nbsp;<code>∂u/∂t = Δ<sub>S</sub> u</code> on the Apple</h3>
+  <p style="color:#889; font-size:12px; margin: 0 0 8px;">
+    Initial condition
+    <code>u(x,0) = sin(ωx)·sin(ωy)·sin(ωz)</code>,
+    forward-Euler step
+    <code>u<sup>n+1</sup> = rot_update( u<sup>n</sup> + Δt · Δ u<sup>n</sup> )</code>,
+    with <code>Δt = 0.1 · δx²</code> and 100 steps.
+  </p>
+  <div class="controls">
+    <button id="hPlay">Play ▶</button>
+    <input type="range" id="hSlider" min="0" max="40" value="0" style="width: 360px;">
+    <span id="hStepLabel">frame 0</span>
+    <span id="hstatus"></span>
+  </div>
+  <div id="three-heat"></div>
+  <div class="caption" id="hCaption">loading…</div>
+</div>
+
+<hr>
+<p class="lede" style="text-align:center;color:#556;font-size:11px;">
+  Serve this folder by running <span class="kbd">python -m http.server 8000</span>
+  from the <code>neural-cpm/</code> directory, then open
+  <span class="kbd">http://localhost:8000/web/index.html</span>.
+</p>
+
+<!-- ── scripts ─────────────────────────────────────────────────────────── -->
+<script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="classical_cpm.js"></script>
+<script src="neural_cpm.js"></script>
+</body>
+</html>
