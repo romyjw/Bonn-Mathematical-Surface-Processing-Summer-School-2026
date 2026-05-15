@@ -1,26 +1,22 @@
 name: mapsenv
+
 channels:
   - conda-forge
-  - defaults
+
 dependencies:
-  - python=3.9
-  - pytorch
-  - torchaudio
-  - torchvision
-  - cython
-  - matplotlib
-  - ninja
-  - plotly
-  - prettytable
-  - scikit-learn
-  - tensorboard
-  - tqdm
-  - trimesh
-  - numpy
-  - scipy
-  - pyglet
-  - pyrender
-  - opencv
-  - yaml
-  - jupyterlab
-prefix: /Users/romywilliamson/miniconda3/envs/mapsenv
+  - python=3.10
+
+  # From conda-forge
+  - numpy=2.2.6
+  - matplotlib=3.10.9
+  - plotly=6.6.0
+  - tqdm=4.67.3
+  - trimesh=4.12.2
+  - jupyterlab=4.5.7
+
+  # From PyPI — kept here to avoid duplicate OpenMP (libomp) with torch
+  - pip:
+      - scipy==1.15.3
+      - torch==2.12.0
+      - torchvision==0.27.0
+      - open3d==0.19.0
