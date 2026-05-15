@@ -41,9 +41,12 @@ class DifferentialModule(Module):
         '''Compute an orthonormal basis (with consistent orientation) for the tangent planes on the sphere.'''
 
         X, Y, Z = wrt[:, 0], wrt[:, 1], wrt[:, 2]
-        # Relabel coordinates near the poles so we never hit N/S pole singularities
+
+        # Relabel coordinates (X,Y,Z -> ) within a radius of the poles, so we never hit the N/S pole singularities.
+        # i.e. in Atlas terminology, we use different local charts near the poles.
         mask = abs(Z) < 0.5
         x, y, z = X*mask + Y*(~mask), Y*mask + Z*(~mask), Z*mask + X*(~mask)
+        
 
         # sphere parametrisation: ( sin u cos v, sin u sin v, cos u ), u in [0,2pi], v in [0,pi]
         cos_u = z
