@@ -8,148 +8,318 @@
 
 * { box-sizing: border-box; }
 
+:root {
+  --bg: #0b1020;
+  --panel: #131a2e;
+  --panel-soft: #10172a;
+  --border: #2e3e67;
+  --text: #e8eefb;
+  --text-soft: #c7d4f2;
+  --text-muted: #9bb0dc;
+  --accent: #5fd7ff;
+  --accent-soft: #8ee8ff;
+}
+
 body {
   margin: 0;
-  padding: 24px 32px 48px;
-  background: #0d0d1f;
-  color: #ccc;
-  font-family: 'Courier New', monospace;
-  font-size: 13px;
-  line-height: 1.55;
+  padding: clamp(14px, 2.2vw, 28px) clamp(12px, 3.5vw, 36px) clamp(24px, 5vw, 56px);
+  background: radial-gradient(1200px 700px at 10% 0%, #17203c 0%, var(--bg) 56%);
+  color: var(--text);
+  font-family: 'Atkinson Hyperlegible', 'Avenir Next', 'Segoe UI', Verdana, sans-serif;
+  font-size: clamp(16px, 1.25vw, 18px);
+  line-height: 1.7;
 }
 
 h1 {
-  color: #7ec8e3;
-  font-size: 22px;
-  margin: 0 0 6px;
+  color: var(--accent-soft);
+  font-size: clamp(1.95rem, 4.4vw, 2.55rem);
+  margin: 0 0 10px;
   letter-spacing: 0.5px;
 }
 h2 {
-  color: #7ec8e3;
-  font-size: 16px;
-  margin: 28px 0 10px;
+  color: var(--accent-soft);
+  font-size: clamp(1.45rem, 3.2vw, 1.85rem);
+  margin: 34px 0 14px;
   letter-spacing: 0.4px;
 }
 h3 {
-  color: #aad6e8;
-  font-size: 13px;
-  margin: 16px 0 8px;
+  color: var(--accent-soft);
+  font-size: clamp(1.08rem, 2vw, 1.25rem);
+  margin: 18px 0 10px;
   letter-spacing: 0.4px;
 }
-p { margin: 6px 0; }
-.lede { color: #889; max-width: 880px; }
-hr { border: 0; border-top: 1px dashed #334; margin: 22px 0; }
+p { margin: 8px 0; }
+.lede { color: var(--text-soft); max-width: 980px; }
+hr { border: 0; border-top: 1px dashed var(--border); margin: 26px 0; }
 
 .section {
-  margin-top: 14px;
-  padding: 12px 16px 16px;
-  background: #11122a;
-  border: 1px solid #1d1f3d;
-  border-radius: 6px;
+  margin-top: 16px;
+  padding: clamp(12px, 2vw, 18px);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
 }
 
 .controls {
   display: flex; flex-wrap: wrap;
   align-items: center; gap: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .cg { display: flex; align-items: center; gap: 5px; }
-.cg label { color: #889; }
-.cg .val { color: #7ec8e3; min-width: 28px; text-align: right; }
+.cg label { color: var(--text-soft); }
+.cg .val { color: var(--accent); min-width: 34px; text-align: right; }
 
-input[type=range] { width: 110px; accent-color: #7ec8e3; cursor: pointer; }
-input[type=checkbox], input[type=radio] { accent-color: #7ec8e3; cursor: pointer; }
+input[type=range] { width: 140px; accent-color: var(--accent); cursor: pointer; }
+input[type=checkbox], input[type=radio] { accent-color: var(--accent); cursor: pointer; }
 .modegroup { display: flex; gap: 12px; flex-wrap: wrap; }
-.modegroup label { color: #aab; cursor: pointer; }
+.modegroup label { color: var(--text-soft); cursor: pointer; }
 .modegroup input { margin-right: 4px; }
 
 button {
-  padding: 5px 13px;
-  background: #151530;
-  color: #7ec8e3;
-  border: 1px solid #334;
-  border-radius: 3px;
+  padding: 8px 14px;
+  background: #1a2542;
+  color: var(--accent-soft);
+  border: 1px solid var(--border);
+  border-radius: 6px;
   cursor: pointer;
-  font-family: inherit; font-size: 12px;
+  font-family: inherit;
+  font-size: 0.98rem;
+  font-weight: 600;
   transition: background 0.12s;
 }
-button:hover { background: #1e1e40; }
-button.on { background: #7ec8e3; color: #0d0d1f; border-color: #7ec8e3; }
+button:hover { background: #223057; }
+button.on { background: var(--accent); color: #061425; border-color: var(--accent); }
 
-#status, #nstatus, #hstatus { color: #556; font-size: 11px; }
+#status, #nstatus, #hstatus { color: var(--text-muted); font-size: 0.9rem; }
 
 canvas { display: block; }
 #cv {
   margin: 6px 0;
-  background: #0d0d1f;
+  background: #091024;
+  width: min(100%, 720px);
+  height: auto;
+  border-radius: 8px;
 }
 #three-poisson, #three-heat {
   width: 100%;
-  height: 460px;
-  background: #0d0d1f;
-  border-radius: 4px;
+  height: clamp(280px, 54vw, 560px);
+  background: #091024;
+  border-radius: 8px;
 }
 
 .legend {
-  margin-top: 6px;
+  margin-top: 8px;
   display: flex; align-items: center; gap: 8px;
-  font-size: 11px; color: #556;
+  font-size: 0.92rem;
+  color: var(--text-muted);
 }
 .lbar {
-  width: 150px; height: 9px; border-radius: 2px;
+  width: 180px; height: 10px; border-radius: 3px;
   background: linear-gradient(to right,
     #03000a, #14103b, #3a0f6f, #621280, #8e3982,
     #be4a7a, #f17b65, #fcc26c, #fcfdbf);
 }
 .algo {
-  margin-top: 6px;
-  font-size: 11px;
-  color: #889;
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: var(--text-soft);
   line-height: 1.8;
 }
 .algo span.active {
-  color: #7ec8e3;
-  background: rgba(126, 200, 227, 0.08);
+  color: var(--accent-soft);
+  background: rgba(95, 215, 255, 0.15);
   border-radius: 3px;
   padding: 1px 4px;
 }
 
 .caption {
   margin-top: 8px;
-  padding: 8px 12px;
-  background: #0e0e22;
-  border-left: 3px solid #7ec8e3;
-  color: #aab;
-  font-size: 12px;
+  padding: 10px 12px;
+  background: var(--panel-soft);
+  border-left: 4px solid var(--accent);
+  color: var(--text-soft);
+  font-size: 0.96rem;
   min-height: 32px;
 }
-.caption strong { color: #7ec8e3; }
+.caption strong { color: var(--accent-soft); }
 
 .two-col {
   display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 320px);
+  gap: 18px;
   align-items: start;
 }
 @media (max-width: 900px) {
   .two-col { grid-template-columns: 1fr; }
 }
 .sidebar {
-  background: #0e0e22;
-  border: 1px solid #1a1c36;
-  border-radius: 4px;
-  padding: 10px 12px;
-  color: #889;
-  font-size: 11px;
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--text-soft);
+  font-size: 0.95rem;
   line-height: 1.7;
 }
 .sidebar h3 { margin-top: 0; }
 
 .kbd {
   display: inline-block;
-  padding: 0 5px;
-  background: #1c1d3a;
-  color: #aad6e8;
+  padding: 2px 7px;
+  background: #1d2a4d;
+  color: var(--accent-soft);
   border-radius: 2px;
-  font-size: 11px;
+  font-size: 0.88rem;
 }
+
+@media (max-width: 760px) {
+  .controls {
+    gap: 10px;
+  }
+  .modegroup {
+    gap: 8px 14px;
+  }
+  input[type=range] {
+    width: 120px;
+  }
+  #three-poisson, #three-heat {
+    height: 340px;
+  }
+}
+
+@media (max-width: 520px) {
+  body {
+    font-size: 16px;
+  }
+  h1 {
+    line-height: 1.2;
+  }
+  button {
+    width: 100%;
+  }
+  .controls {
+    align-items: stretch;
+  }
+  .cg {
+    width: 100%;
+    justify-content: space-between;
+  }
+  input[type=range] {
+    width: min(54vw, 220px);
+  }
+  #three-poisson, #three-heat {
+    height: 280px;
+  }
+}
+
+/* ===========================================================================
+ *  Problem statement box (Part 1)
+ * ===========================================================================*/
+.problem-box {
+  margin: 0 0 18px;
+  padding: 16px 22px;
+  background: #0c1526;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  max-width: 980px;
+}
+.problem-label {
+  display: block;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+.problem-eq {
+  text-align: center;
+  padding: 4px 0;
+  overflow-x: auto;
+}
+.problem-box .katex-display {
+  margin: 8px 0 4px;
+  color: var(--accent-soft);
+}
+.problem-box .katex {
+  color: var(--accent-soft);
+}
+.problem-sub {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  margin-top: 8px;
+  line-height: 1.65;
+}
+
+/* ===========================================================================
+ *  Inline code and KaTeX — consistent look everywhere
+ * ===========================================================================*/
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  background: rgba(95, 215, 255, 0.09);
+  color: var(--accent-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.88em;
+  white-space: nowrap;
+}
+/* prevent mid-formula line breaks in headings */
+h3 code { white-space: nowrap; }
+
+/* KaTeX global colour on dark background */
+.katex { color: var(--text); }
+.sidebar .katex,
+.algo .katex { color: var(--accent-soft); }
+
+/* equation paragraphs: tighter top margin */
+.eq-para { margin: 0 0 10px; }
+
+/* ===========================================================================
+ *  Sidebar: h4 heading + mode description list
+ * ===========================================================================*/
+.sidebar-h4 {
+  color: var(--accent-soft);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 14px 0 6px;
+}
+.mode-list {
+  margin: 4px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+.mode-list li {
+  padding: 4px 0 4px 10px;
+  border-left: 2px solid rgba(95, 215, 255, 0.22);
+  margin-bottom: 4px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+.mode-list strong { color: var(--accent-soft); }
+
+/* ===========================================================================
+ *  Algo steps row — wraps cleanly, no stray &nbsp; gaps
+ * ===========================================================================*/
+.algo-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin-top: 4px;
+}
+.algo-arrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ===========================================================================
+ *  Heat animation slider — responsive, no inline style override needed
+ * ===========================================================================*/
+#hSlider { width: clamp(140px, 36vw, 360px); }
+
+/* ===========================================================================
+ *  Tooltip affordance: help cursor on labelled items, pointer on controls
+ * ===========================================================================*/
+label[title] { cursor: help; }

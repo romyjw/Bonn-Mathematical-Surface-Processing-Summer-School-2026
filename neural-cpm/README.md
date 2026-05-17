@@ -18,29 +18,18 @@ neural-cpm/
 ## Setup
 
 ```bash
-conda create -n pde python=3.10
-conda activate pde
+conda env create -f environment.yml
+conda activate mapsenv
 cd neural_cpm
-pip install -r requirements.txt
 ```
 
 ## Run the notebook
 
+Best for openning with vscode
+Also ok:
 ```bash
-cd neural-cpm
 jupyter lab ncpm_poisson_and_heat.ipynb
-#(or open the notebook with vscode)
 ```
-
-Default device is **CPU**. To switch, change a single variable in the second
-cell:
-
-```python
-DEVICE = "cpu"   # or "mps" on Apple silicon, or "cuda"
-```
-
-The slowest step (`retrieve_neural_weights`) is cached to
-`cache/neural_weights.pt` by default — set `USE_CACHE = False` to recompute.
 
 ## Run the web demo
 

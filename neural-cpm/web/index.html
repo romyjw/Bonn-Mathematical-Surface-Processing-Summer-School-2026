@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Neural Closest-Point Method · Bonn Summer School 2026</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 </head>
 <body>
 
 <h1>Neural Closest-Point Method</h1>
 <p class="lede">
-A two-part tour for the Bonn Mathematical Surface Processing Summer School 2026.
-First, an interactive 2-D Closest-Point Method demo so you can <em>see</em> the
+First, an interactive 2-D Closest-Point Method demo so you can <em>see</em> the 
 algorithm; then a 3-D viewer of the same algorithm running on the Apple surface,
-with the neural <code>rot_update</code> taking over from the classical band
-extension.
+with the neural extension replacing the classical band extension.
 </p>
 
 <!-- ──────────────────────────────────────────────────────────────────── -->
@@ -21,24 +21,40 @@ extension.
 <!-- ──────────────────────────────────────────────────────────────────── -->
 <h2>Part 1 &mdash; classical CPM on a 2-D closed curve</h2>
 
+<div class="problem-box">
+  <span class="problem-label">Solving on the curve <em>S</em></span>
+  <div class="problem-eq">$$\frac{\partial u}{\partial t} = \Delta_S\, u, \qquad u(\,\cdot\,,0) = \sin\theta$$</div>
+  <span class="problem-sub">
+    \(\theta\) is the arc-angle parameter on the curve.
+    Discretised by the Closest-Point Method on a narrow band of width \(s \cdot h\) around \(S\),
+    using a 5-point grid Laplacian and forward-Euler time-stepping.
+  </span>
+</div>
+
 <div class="section two-col">
   <div>
     <div class="controls">
-      <button id="btnNew">New curve</button>
-      <button id="btnReset">Fresh u</button>
-      <button id="btnIter">Iterate</button>
-      <button id="btnAuto">Auto ▶</button>
+      <button id="btnNew" title="Generate a new random closed curve and reset u">New curve</button>
+      <button id="btnReset" title="Keep current curve; reset u to the initial condition u&#8320; = sin(&#952;)">Fresh u</button>
+      <button id="btnIter" title="Run one full CPM step: &#9312; extend &#8594; &#9313; heat sub-steps &#8594; &#9314; pull-back">Iterate</button>
+      <button id="btnAuto" title="Toggle continuous iteration (click again to pause)">Auto &#9654;</button>
 
-      <div class="cg"><label>band s</label>
-        <input type="range" id="slBand" min="1" max="6" step="0.5" value="2">
+      <div class="cg">
+        <label title="Band half-width in grid spacings: all grid points within s&#xB7;h of the curve are included">band s</label>
+        <input type="range" id="slBand" min="1" max="6" step="0.5" value="2"
+               title="Wider band &#8594; smoother extension, but more cells to update">
         <span class="val" id="vBand">2.0</span>
       </div>
-      <div class="cg"><label>h</label>
-        <input type="range" id="slH" min="5" max="28" step="1" value="12">
+      <div class="cg">
+        <label title="Grid spacing h: domain divided into N&#xA0;=&#xA0;1/h intervals per side (larger slider = coarser)">h</label>
+        <input type="range" id="slH" min="5" max="28" step="1" value="12"
+               title="Coarser grid (larger h) = faster but less accurate; stability: &#916;t &#8804; h&#xB2;/4">
         <span class="val" id="vH">12</span>
       </div>
-      <div class="cg"><label>sub-steps</label>
-        <input type="range" id="slSub" min="1" max="40" step="1" value="8">
+      <div class="cg">
+        <label title="Explicit-Euler heat steps applied to the band grid per CPM iterate">sub-steps</label>
+        <input type="range" id="slSub" min="1" max="40" step="1" value="8"
+               title="More sub-steps = stronger diffusion per iterate (stability: &#916;t &#8804; h&#xB2;/4)">
         <span class="val" id="vSub">8</span>
       </div>
       <div class="cg">
@@ -48,12 +64,18 @@ extension.
     </div>
 
     <div class="controls modegroup">
-      <label><input type="radio" name="vismode" value="curve">    curve only</label>
-      <label><input type="radio" name="vismode" value="cp">       closest-point map</label>
-      <label><input type="radio" name="vismode" value="band">     band cells</label>
-      <label><input type="radio" name="vismode" value="extended"> after extend</label>
-      <label><input type="radio" name="vismode" value="heat">     heat-step Δ</label>
-      <label><input type="radio" name="vismode" value="pulled" checked> after pull-back</label>
+      <label title="Display the curve only — no scalar data coloured">
+        <input type="radio" name="vismode" value="curve"> curve only</label>
+      <label title="Arrows from each band cell to its nearest point on the curve">
+        <input type="radio" name="vismode" value="cp"> closest-point map</label>
+      <label title="Highlight all grid cells inside the computational band">
+        <input type="radio" name="vismode" value="band"> band cells</label>
+      <label title="Step &#9312;: u extended from curve into the band — values constant along each closest-point ray">
+        <input type="radio" name="vismode" value="extended"> after extend</label>
+      <label title="Step &#9313;: change &#916;u produced by the grid heat sub-steps (blue&#xA0;=&#xA0;decrease, red&#xA0;=&#xA0;increase)">
+        <input type="radio" name="vismode" value="heat"> heat-step &#916;</label>
+      <label title="Step &#9314;: u pulled back onto the curve by bilinear interpolation — the updated solution">
+        <input type="radio" name="vismode" value="pulled" checked> after pull-back</label>
     </div>
 
     <canvas id="cv" width="720" height="610"></canvas>
@@ -64,9 +86,13 @@ extension.
 
     <div class="algo">
       Each <em>Iterate</em> performs:
-      <span id="step-1">① extend u from curve → band along closest-point map</span> &nbsp;→&nbsp;
-      <span id="step-2">② grid-Laplacian heat sub-steps</span> &nbsp;→&nbsp;
-      <span id="step-3">③ bilinear pull-back onto curve</span>.
+      <div class="algo-steps">
+        <span id="step-1">① extend <em>u</em> from curve → band via closest-point</span>
+        <span class="algo-arrow">→</span>
+        <span id="step-2">② grid-Laplacian heat sub-steps</span>
+        <span class="algo-arrow">→</span>
+        <span id="step-3">③ bilinear pull-back onto curve</span>
+      </div>
     </div>
   </div>
 
@@ -74,22 +100,25 @@ extension.
     <h3>What am I looking at?</h3>
     <p>
       The closed curve is the &ldquo;surface&rdquo;.
-      Around it we lay a narrow <em>band</em> of grid cells.
-      Each band cell remembers which curve point is closest to it
-      &mdash; that is the <em>closest-point map</em>.
+      Around it lies a narrow <em>band</em> of grid cells.
+      Each band cell stores the nearest point on the curve
+      &mdash; the <em>closest-point map</em>.
     </p>
     <p>
-      Diffusion <em>on the curve</em> is faked by alternating two cheap
-      moves on the grid: copy values along the closest-point map
-      (<em>extend</em>), then take a standard 2-D heat step
-      (<em>heatStep</em>). Bilinear interpolation
-      (<em>pullToCurve</em>) brings the new values home.
+      Diffusion <em>on the curve</em> is approximated by alternating:
+      copy \(u\) along the closest-point rays (<em>extend</em>),
+      then apply a standard 2-D heat step on the grid (<em>heatStep</em>).
+      Bilinear interpolation (<em>pullToCurve</em>) brings values back.
     </p>
-    <p>
-      Use the radio buttons above to isolate each stage visually.
-      The same three stages reappear in 3-D below, where the neural
-      operator replaces the grid extension.
-    </p>
+    <h4 class="sidebar-h4">Visualisation modes</h4>
+    <ul class="mode-list">
+      <li><strong>curve only</strong> &mdash; the curve, no colour data</li>
+      <li><strong>closest-point map</strong> &mdash; arrows to nearest curve points</li>
+      <li><strong>band cells</strong> &mdash; grid cells inside the band</li>
+      <li><strong>after extend</strong> &mdash; \(u\) copied into band (constant along each ray)</li>
+      <li><strong>heat-step &#916;</strong> &mdash; increment \(\Delta u\) after grid heat sub-steps</li>
+      <li><strong>after pull-back</strong> &mdash; updated \(u\) restricted to the curve</li>
+    </ul>
   </aside>
 </div>
 
@@ -102,7 +131,7 @@ extension.
 <p class="lede">
   In 3-D, building a regular grid + closest-point map for an arbitrary mesh
   is fiddly and dense. The neural variant replaces step ① with a learned
-  <code>rot_update</code> that smooths a function defined near the surface
+  <code>neural extension</code> that smooths a function defined near the surface
   in a way that respects the surface geometry. Steps ② &amp; ③ then become a
   sparse linear solve (Poisson) or a sequence of explicit Euler steps (Heat).
 </p>
@@ -115,17 +144,15 @@ extension.
 
 <!-- Poisson stage-stepper -->
 <div class="section">
-  <h3>Poisson: &nbsp;<code>Δ<sub>S</sub> u(x,y,z) = f(x,y,z)</code> on the Apple</h3>
-  <p style="color:#889; font-size:12px; margin: 0 0 8px;">
-    With
-    <code>f(x,y,z) = sin(ωx)·sin(ωy)·sin(ωz)</code>,
-    <code>ω = 10</code>,
-    and zero-mean gauge
-    <code>∫<sub>S</sub> u = 0</code>.
-    (The linear system actually solved on the band is
-    <code>L · u<sub>band</sub> = δx² · f<sub>smoothed</sub></code>,
-    where <code>L</code> is the 7-point stencil without the
-    <code>1/δx²</code> factor.)
+  <h3>Poisson &mdash; \(\Delta_S\, u = f\) on the Apple</h3>
+  <p class="lede eq-para">
+    With \(f(x,y,z) = \sin(\omega x)\sin(\omega y)\sin(\omega z)\), \(\omega = 10\),
+    and zero-mean gauge \(\textstyle\int_S u = 0\).
+  </p>
+  <p class="lede eq-para">
+    The linear system solved on the band is
+    \(L\,u_{\mathrm{band}} = \delta x^2\, f_{\mathrm{smoothed}}\),
+    where \(L\) is the 7-point stencil without the \(1/\delta x^2\) factor.
   </p>
   <div class="controls">
     <button id="pPrev">◀ Prev stage</button>
@@ -138,17 +165,18 @@ extension.
 
 <!-- Heat animation -->
 <div class="section">
-  <h3>Heat: &nbsp;<code>∂u/∂t = Δ<sub>S</sub> u</code> on the Apple</h3>
-  <p style="color:#889; font-size:12px; margin: 0 0 8px;">
-    Initial condition
-    <code>u(x,0) = sin(ωx)·sin(ωy)·sin(ωz)</code>,
-    forward-Euler step
-    <code>u<sup>n+1</sup> = rot_update( u<sup>n</sup> + Δt · Δ u<sup>n</sup> )</code>,
-    with <code>Δt = 0.1 · δx²</code> and 100 steps.
+  <h3>Heat &mdash; \(\partial u / \partial t = \Delta_S\, u\) on the Apple</h3>
+  <p class="lede eq-para">
+    Initial condition \(u(x,0) = \sin(\omega x)\sin(\omega y)\sin(\omega z)\).
+  </p>
+  <p class="lede eq-para">
+    Forward-Euler step:
+    \(u^{n+1} = \mathrm{neural\_extension}\!\left(u^n + \Delta t\,\Delta u^n\right)\),
+    with \(\Delta t = 0.1\,\delta x^2\) and 100 steps.
   </p>
   <div class="controls">
-    <button id="hPlay">Play ▶</button>
-    <input type="range" id="hSlider" min="0" max="40" value="0" style="width: 360px;">
+    <button id="hPlay">Play &#9654;</button>
+    <input type="range" id="hSlider" min="0" max="40" value="0">
     <span id="hStepLabel">frame 0</span>
     <span id="hstatus"></span>
   </div>
@@ -157,7 +185,7 @@ extension.
 </div>
 
 <hr>
-<p class="lede" style="text-align:center;color:#556;font-size:11px;">
+<p class="lede" style="text-align:center;">
   Serve this folder by running <span class="kbd">python -m http.server 8000</span>
   from the <code>neural-cpm/</code> directory, then open
   <span class="kbd">http://localhost:8000/web/index.html</span>.
@@ -168,5 +196,17 @@ extension.
 <script src="vendor/OrbitControls.js"></script>
 <script src="classical_cpm.js"></script>
 <script src="neural_cpm.js"></script>
+<!-- KaTeX math rendering -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script>
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false
+  });
+</script>
 </body>
 </html>
