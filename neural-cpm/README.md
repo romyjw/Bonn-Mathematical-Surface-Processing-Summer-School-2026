@@ -24,10 +24,11 @@ cd neural_cpm
 ```
 
 ## Run the notebook
+Best for openning with vscode,
 
-Best for openning with vscode
 Also ok:
 ```bash
+# tested with vscode by not tested with jupyter, some vis might not work
 jupyter lab ncpm_poisson_and_heat.ipynb
 ```
 
